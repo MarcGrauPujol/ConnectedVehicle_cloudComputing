@@ -5,4 +5,5 @@ variable "region" {
 
 variable "s3_name" {
   type = string
+  default = "s3-static-website"
 }
