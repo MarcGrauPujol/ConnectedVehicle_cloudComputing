@@ -1,9 +1,28 @@
-variable "region" {
-  type = string
-  default = "us-weast-2"
+#########################################
+# Global
+#########################################
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type = map(string)
+  default = {}  
 }
 
-variable "s3_name" {
+#########################################
+# S3 bucket
+#########################################
+variable "bucket_name" {
+  description = "The name of the bucket. If ommitted, Terraform will assign a random, unique name."
   type = string
-  default = "s3-static-website-marc-grup-4"
+  nullable = false
+}
+
+variable "force_destroy" {
+  description = "(Optional, Default: false) A boolean that indicates all object should be deleted from the bucket so that the bucket can be deleted without error. These objects are not recoverable."
+  type = bool
+  default = false  
+}
+
+variable "upload_sample_file" {
+  default     = false
+  description = "Upload sample html file to s3 bucket"
 }
