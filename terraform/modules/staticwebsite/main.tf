@@ -8,6 +8,8 @@ locals{
   bucket_name = format("%s-%s",
                     "bucket", 
                     var.bucket_name)
+
+  s3_origin_id = var.bucket_name
 }
 
 resource "aws_s3_bucket" "this" {
@@ -72,4 +74,48 @@ resource "aws_s3_object" "errorobject" {
   key          = "error.html"
   source       = "${path.module}/error.html"
   content_type = "text/html"
+}
+
+##################
+# CloudFront
+##################
+
+resource "aws_cloudfront_distribution" "s3_distribution" {
+  origin {
+    domain_name              = aws_s3_bucket.this.bucket_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
+    origin_id                = local.s3_origin_id
+  }
+  
+  enabled             = true
+  is_ipv6_enabled     = true
+  default_root_object = "index.html"
+
+  default_cache_behavior {
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = local.s3_origin_id
+
+    viewer_protocol_policy = "HTTP and HTTPS"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "whitelist"
+      locations        = ["US", "CA", "GB", "DE"]
+    }
+  }
+
+  tags = merge(
+    local.default_tags,
+    var.tags
+  )
+
+  viewer_certificate {
+    cloudfront_default_certificate = false
+  }
+
 }

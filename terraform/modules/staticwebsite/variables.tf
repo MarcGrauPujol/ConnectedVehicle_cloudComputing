@@ -26,3 +26,18 @@ variable "upload_sample_file" {
   default     = false
   description = "Upload sample html file to s3 bucket"
 }
+
+#########################################
+# CloudFront
+#########################################
+variable "origin_domain_name" {
+  description = "The domain name of the origin for CloudFront"
+  type        = string
+}
+
+variable "allowed_methods" {
+  description = "HTTP methods CloudFront forwards to your origin"
+  type        = list(string)
+  default     = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+}
+
