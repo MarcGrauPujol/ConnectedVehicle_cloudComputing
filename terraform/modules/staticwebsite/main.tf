@@ -47,14 +47,22 @@ resource "aws_s3_bucket_policy" "this" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Id      = "AllowGetObjects"
+    Id      = "PolicyForCloudFrontPrivateContent"
     Statement = [
       {
-        Sid       = "PublicReadGetObject"
+        Sid       = "AllowCloudFrontServicePrincipal"
         Effect    = "Allow"
-        Principal = "*"
+        Principal =  {
+          type        = "Service"
+          identifiers = ["cloudfront.amazonaws.com"]
+        }
         Action    = "s3:GetObject"
         Resource  = "${aws_s3_bucket.this.arn}/**"
+        Condition = {
+          test = "StringEquals"
+          variable = "AWS:SourceArn"
+          values = "${aws_cloudfront_distribution.s3_distribution.arn}"                
+        }
       }
     ]
   })
@@ -80,15 +88,21 @@ resource "aws_s3_object" "errorobject" {
 # CloudFront
 ##################
 
+resource "aws_cloudfront_origin_access_control" "this" {
+  name                              = "controlSettingStaticWebsite"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket.this.bucket_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
+    origin_access_control_id = aws_cloudfront_origin_access_control.this.id
     origin_id                = local.s3_origin_id
   }
   
   enabled             = true
-  is_ipv6_enabled     = true
   default_root_object = "index.html"
 
   default_cache_behavior {
@@ -104,8 +118,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   restrictions {
     geo_restriction {
-      restriction_type = "whitelist"
-      locations        = ["US", "CA", "GB", "DE"]
+      restriction_type = "none"
+      locations        = []
     }
   }
 
