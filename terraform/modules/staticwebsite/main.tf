@@ -25,10 +25,10 @@ resource "aws_s3_bucket" "this" {
   )
 }
 
-resource "aws_s3_bucket_acl" "this" {
-  bucket = aws_s3_bucket.this.id
-  acl = "public-read"
-}
+# resource "aws_s3_bucket_acl" "this" {
+#   bucket = aws_s3_bucket.this.id
+#   acl = "public-read"
+# }
 
 resource "aws_s3_bucket_website_configuration" "this" {
   bucket = aws_s3_bucket.this.bucket
@@ -46,22 +46,21 @@ resource "aws_s3_bucket_policy" "this" {
   bucket = aws_s3_bucket.this.id
 
   policy = jsonencode({
-    Version = "2012-10-17"
-    Id      = "PolicyForCloudFrontPrivateContent"
-    Statement = [
+    "Version": "2012-10-17",
+    "Id": "PolicyForCloudFrontPrivateContent",
+    "Statement": [
       {
-        Sid       = "AllowCloudFrontServicePrincipal"
-        Effect    = "Allow"
-        Principal =  {
-          type        = "Service"
-          identifiers = ["cloudfront.amazonaws.com"]
-        }
-        Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.this.arn}/**"
-        Condition = {
-          test = "StringEquals"
-          variable = "AWS:SourceArn"
-          values = "${aws_cloudfront_distribution.s3_distribution.arn}"                
+        "Sid": "AllowCloudFrontServicePrincipal",
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "cloudfront.amazonaws.com"
+        },
+        "Action": "s3:GetObject",
+        "Resource": "${aws_s3_bucket.this.arn}/*",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceArn": "${aws_cloudfront_distribution.s3_distribution.arn}"
+          }
         }
       }
     ]
@@ -100,8 +99,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     domain_name              = aws_s3_bucket.this.bucket_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.this.id
     origin_id                = local.s3_origin_id
-  }
-  
+  }  
+
   enabled             = true
   default_root_object = "index.html"
 
@@ -110,10 +109,18 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = local.s3_origin_id
 
-    viewer_protocol_policy = "HTTP and HTTPS"
+    viewer_protocol_policy = "allow-all"
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
   }
 
   restrictions {
@@ -129,7 +136,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   )
 
   viewer_certificate {
-    cloudfront_default_certificate = false
+    cloudfront_default_certificate = true
   }
 
 }
