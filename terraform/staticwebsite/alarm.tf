@@ -12,7 +12,7 @@ locals {
       alarm_description         = "The amount of data in bytes that is stored in a bucket."
     }
   },
-    # Only for prod env
+    
     {
       "NumberOfObjects" : {
         comparison_operator       = "GreaterThanThreshold"
@@ -28,7 +28,7 @@ locals {
   )
 }
 
-module "rds_alarms" {
+module "s3_alarms" {
   source = "../modules/cloudwatch/alarms"
   for_each = local.alarms
 
