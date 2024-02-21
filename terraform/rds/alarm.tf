@@ -8,7 +8,7 @@ locals {
       namespace                 = "AWS/RDS"
       period                    = 60
       statistic                 = "Average"
-      threshold                 = 80
+      threshold                 = 80  #change to 1 to activate the alarm
       alarm_description         = "This metric indicates the cpu utilization"
     }
   },
@@ -68,6 +68,6 @@ module "rds_alarms" {
   threshold                 = each.value.threshold
   alarm_description         = each.value.alarm_description
   dimensions = {
-    DBInstanceIdentifier = "database-1", #No posar el nom hardcoded
+    DBInstanceIdentifier = "database-1", # hardcoded name
   }
 }

@@ -4,7 +4,7 @@ resource "aws_cloudwatch_metric_alarm" "alarms" {
 
   alarm_name = format("%s-%s",
     "alarm",
-    var.alarm_name,
+    var.alarm_name
   )
 
   alarm_description = var.alarm_description
@@ -28,7 +28,7 @@ resource "aws_cloudwatch_metric_alarm" "alarms" {
   actions_enabled           = var.actions_enabled
   ok_actions                = var.ok_actions
   insufficient_data_actions = []
-  alarm_actions             = var.alarm_actions
+  alarm_actions             = var.alarm_actions == null ? [data.aws_sns_topic.this.arn] : var.alarm_actions
 
   dynamic "metric_query" {
     for_each = var.metric_query
@@ -54,5 +54,4 @@ resource "aws_cloudwatch_metric_alarm" "alarms" {
     }
   }
   threshold_metric_id = var.threshold_metric_id
-
 }
