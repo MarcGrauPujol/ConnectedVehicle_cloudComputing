@@ -1,3 +1,3 @@
 data "aws_sns_topic" "this" {
-  name = "topic-for-cloudwatch-alarms-alarms_topic"
+  name = "topic-for-cloudwatch-alarms"
 }

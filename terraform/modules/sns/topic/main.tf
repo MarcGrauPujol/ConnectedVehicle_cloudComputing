@@ -1,8 +1,7 @@
 # SNS topic to send emails with the Alerts
 resource "aws_sns_topic" "alarm" {
-  name = format("%s-%s",
+  name = format("%s",
     "topic-for-cloudwatch-alarms",
-    var.topic_name
   )
   # kms_master_key_id = aws_kms_key.sns_encryption_key.id
   delivery_policy   = <<EOF
