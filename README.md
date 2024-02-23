@@ -32,7 +32,8 @@ $terraform apply
 4. Ir al punto de distribución creado con CloudFront --> copiar el domain name a un navegador (debería de verse el index.html)
 
 
------------------------PASO 4 -CLOUDWATCH-ALARMS - -------------------------------------------------
+-----------------------PASO 4 -CLOUDWATCH-ALARMS - ------------------------------------------
+
 0. Primero hay que crear la RDS, sino, no se generan las métricas que se usan para las alarmas de CloudWatch
 
 <!-- 1. Acceder al fichero: ConnectedVehicle_cloudComputing/terraform/modules/cloudwatch/alarms/lookup.tf
