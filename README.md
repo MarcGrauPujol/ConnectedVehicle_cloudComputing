@@ -37,7 +37,7 @@ $terraform apply
 
 <!-- 1. Acceder al fichero: ConnectedVehicle_cloudComputing/terraform/modules/cloudwatch/alarms/lookup.tf
     - Sustituir el nombre del topic que hay hardcoded por el nombre del topico creado anteriormente (paso 2). Para ver el nombre, simplemente hay que ir al servicio Amazon SNS y ir a la opcion Topics, alli se listan todos los que estan creados. -->
-    <!-- Esto ya no hace falta, ahora por defecto el nombre del topic es el mismo siempre. -->
+<!-- Esto ya no hace falta, ahora por defecto el nombre del topic es el mismo siempre. -->
 2. Acceder al fichero: ConnectedVehicle_cloudComputing/terraform/rds/alarm.tf
     - Cambiar el nombre de la DB (DB Identifier) en el campo DBInstanceIdentifier por el de la RDS ya creada
 3. La alarmas para el bucket s3, se crean en el paso anterior, asi que en este mismo momento ya deberían estar creadas.
