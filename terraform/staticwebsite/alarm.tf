@@ -18,7 +18,7 @@ locals {
         comparison_operator       = "GreaterThanThreshold"
         evaluation_periods        = 5
         metric_name               = "NumberOfObjects"
-        namespace                 = "AWS/RDS"
+        namespace                 = "AWS/S3"
         period                    = 60
         statistic                 = "Maximum"
         threshold                 = 80
